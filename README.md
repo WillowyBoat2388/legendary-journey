@@ -1,2 +1,4 @@
 # legendary-journey
 An OnG data visualisation &amp; management end-to-end data engineering style project which uses a scenario-based approach to illustrate a template-contract approach to projects
+
+![alt text](diagram-export-1-17-2026-10_14_40-AM.png)
