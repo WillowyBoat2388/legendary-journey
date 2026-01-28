@@ -1,12 +1,11 @@
 # OnG Upstream Data Management Case Study
-An Oil & Gas data visualisation &amp; management end-to-end data engineering style architecture demo, using a scenario-based approach to illustrate a template-contract approach to organisaton data management projects.
+An Oil & Gas data management &amp; visualisation architecture demo, with an end-to-end data engineering style using a scenario-based approach to illustrate a template-contract approach to organisation data management projects.
 
 
 ### Navigation / Quick Access
 Quickly move to the section you are interested in by clicking on the appropriate link:
 
 Overview
-Architecture
 Phase 1 Preamble
 Phase 2(Project Implementation)
 Extensibility
@@ -64,16 +63,29 @@ flowchart TB
   P4 --> P5d["**Phase 5d** Compliance"]
 ```
 
+# Phase 1
+---------------------------------------------------------------------
+
+I will leave potential discussions on the complexities of designing data architecture and project implementation documents for a second article. A lot of data management and governance issues flow downstream from these decisions, and I believe context determines how that is handled, but I will maintain the focus on tackling data processing and downstream tasks for this write-up.
 
 
-![alt text](diagram-export-1-17-2026-10_14_40-AM.png)
 
 
 
-![alt text](diagram-export-1-17-2026-10_14_40-AM.png)
+
+# Phase 2
+---------------------------------------------------------------------
+### Navigation / Quick Access
+Quickly move to the section you are interested in by clicking on the appropriate link:
+
+Objectives
+Architecture
+Development
+
+## Objectives
 
 
-# Architecture
+## Architecture
 
 
 
