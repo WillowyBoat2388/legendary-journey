@@ -1,5 +1,5 @@
-# Legendary-Journey
-An OnG data visualisation &amp; management end-to-end data engineering style architecture demo, using a scenario-based approach to illustrate a template-contract approach to organisaton data management projects.
+# OnG Upstream Data Management Case Study
+An Oil & Gas data visualisation &amp; management end-to-end data engineering style architecture demo, using a scenario-based approach to illustrate a template-contract approach to organisaton data management projects.
 
 
 ### Navigation / Quick Access
