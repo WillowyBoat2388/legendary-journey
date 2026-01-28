@@ -5,17 +5,16 @@ An Oil & Gas data management &amp; visualisation architecture demo, with an end-
 ## Navigation / Quick Access
 Quickly move to the section you are interested in by clicking on the appropriate link:
 
-* Overview
-* [Phase 1 Preamble](#phase-1)
+* [Overview](#overview)
+* [Phase 1(Preamble)](#phase-1)
 * [Phase 2(Project Implementation)](#phase-2)
-* [Extensibility](#extensibility)
+* [Extensibility](#xtensibility)
 * [Phase 5](#phase-5)
 * [Outcome](#outcome)
 
 
 ## Overview
 ------------------------------------------------------------------------------------------------------------------------------------------
-
 
 ### Scenario
   A Data & AI consulting firm(hereafter called: D-Konsult) has been contracted by an Oil & Gas upstream research firm(hereafter called: GeoResults. As a major partner of D-Konsult, GeoResults has made demands of D-Konsult's executives, resulting in the Engineering & Analytics teams being placed under embargo - provide visible results ASAP. We will here-after then, scrutinize the different parts of the solution architecture that D-Konsult's team settle on/result to.
@@ -65,19 +64,21 @@ I will leave potential discussions on the complexities of designing data archite
 
 
 
-
-
 ## Phase 2
 ---------------------------------------------------------------------
 ### Navigation / Quick Access
   Quickly move to the section you are interested in by clicking on the appropriate link:
 
-Objectives
-Architecture
-Development
+* [Objectives](#objectives)
+* [Architecture](#architecture)
+* [Development](#development)
 
 ### Objectives
-
+---------------------------------------------------------------------
+* ✅ Provide a cloud data store for oil site sensor events data and other on-site events
+* ✅ Create a logical storage design using a variant of the Databricks Medallion Architecture
+* ✅ Model incoming data stream for use by downstream analysts and geoscientists/researchers 
+* ✅ Create a near real-time monitoring dashboard for on-site sensor readings
 
 ### Architecture
   ![alt text](diagram-export-1-17-2026-10_14_40-AM.png)
