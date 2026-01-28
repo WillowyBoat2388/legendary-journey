@@ -2,41 +2,35 @@
 An Oil & Gas data management &amp; visualisation architecture demo, with an end-to-end data engineering style using a scenario-based approach to illustrate a template-contract approach to organisation data management projects.
 
 
-### Navigation / Quick Access
+## Navigation / Quick Access
 Quickly move to the section you are interested in by clicking on the appropriate link:
 
-Overview
-Phase 1 Preamble
-Phase 2(Project Implementation)
-Extensibility
-Phase 5
-Outcome
+* Overview
+* [Phase 1 Preamble](#phase-1)
+* [Phase 2(Project Implementation)](#phase-2)
+* [Extensibility](#extensibility)
+* [Phase 5](#phase-5)
+* [Outcome](#outcome)
 
 
-Project Objective
-Project Architecture
-Dataset
-Reproducing Project (long section)
-Dashboard
-
-# Overview
+## Overview
 ------------------------------------------------------------------------------------------------------------------------------------------
 
 
-## Scenario
--  A Data & AI consulting firm(hereafter called: D-Konsult) has been contracted by an Oil & Gas upstream research firm(hereafter called: GeoResults. As a major partner of D-Konsult, GeoResults has made demands of D-Konsult's executives, resulting in the Engineering & Analytics teams being placed under embargo - provide visible results ASAP. We will here-after then, scrutinize the different parts of the solution architecture that D-Konsult's team settle on/result to.
+### Scenario
+  A Data & AI consulting firm(hereafter called: D-Konsult) has been contracted by an Oil & Gas upstream research firm(hereafter called: GeoResults. As a major partner of D-Konsult, GeoResults has made demands of D-Konsult's executives, resulting in the Engineering & Analytics teams being placed under embargo - provide visible results ASAP. We will here-after then, scrutinize the different parts of the solution architecture that D-Konsult's team settle on/result to.
 
-### Context
-  - This project repository contains the primary building block for a real-time enabled Databricks Workspace, coupled with a dashboard engine to quickly visualize, share and design data products. 
+#### Context
+  This project repository contains the primary building block for a real-time enabled Databricks Workspace, coupled with a dashboard engine to quickly visualize, share and design data products. 
 
-### Technologies
+#### Technologies
 - **Databricks**
 - **Azure Cloud**
 - **Terraform**
 - **Github Actions**
 - **Superset**
 
-## Phases
+### Phases
 - ***Phase 1***: High-level Conceptual Model
 - ***Phase 2***: Engineering Patterns & Implementation
 - ***Phase 3***: Delivery Patterns, Insights Generation
@@ -63,7 +57,7 @@ flowchart TB
   P4 --> P5d["**Phase 5d** Compliance"]
 ```
 
-# Phase 1
+## Phase 1
 ---------------------------------------------------------------------
 
 I will leave potential discussions on the complexities of designing data architecture and project implementation documents for a second article. A lot of data management and governance issues flow downstream from these decisions, and I believe context determines how that is handled, but I will maintain the focus on tackling data processing and downstream tasks for this write-up.
@@ -73,25 +67,28 @@ I will leave potential discussions on the complexities of designing data archite
 
 
 
-# Phase 2
+## Phase 2
 ---------------------------------------------------------------------
 ### Navigation / Quick Access
-Quickly move to the section you are interested in by clicking on the appropriate link:
+  Quickly move to the section you are interested in by clicking on the appropriate link:
 
 Objectives
 Architecture
 Development
 
-## Objectives
+### Objectives
 
 
-## Architecture
+### Architecture
+  ![alt text](diagram-export-1-17-2026-10_14_40-AM.png)
 
 
 
-![alt text](diagram-export-1-17-2026-10_14_40-AM.png)
-
-
+Project Objective
+Project Architecture
+Dataset
+Reproducing Project (long section)
+Dashboard
 
 
 Overview
@@ -164,4 +161,13 @@ The final dataset is produced in the gold layer after cleaning, enrichment, and 
 |-- updated: timestamp (nullable = true)
 |-- country_code: string (nullable = true)
 |-- sig_class: string (nullable = false)
+
+
+
+## Extensibility
+
+
+
+## Phase 5
+
 
