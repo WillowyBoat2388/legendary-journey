@@ -14,7 +14,7 @@ Quickly move to the section you are interested in by clicking on the appropriate
 
 
 ## Overview
-------------------------------------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------
 
 ### Scenario
   A Data & AI consulting firm(hereafter called: D-Konsult) has been contracted by an Oil & Gas upstream research firm(hereafter called: GeoResults. As a major partner of D-Konsult, GeoResults has made demands of D-Konsult's executives, resulting in the Engineering & Analytics teams being placed under embargo - provide visible results ASAP. We will here-after then, scrutinize the different parts of the solution architecture that D-Konsult's team settle on/result to.
