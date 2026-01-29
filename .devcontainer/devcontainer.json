@@ -3,7 +3,7 @@
 //
 // See https://aka.ms/devcontainer.json for more information.
 {
-	"name": "Bdn-app",
+	"name": "streaming-app",
 	"privileged": true,
 	"image": "mcr.microsoft.com/devcontainers/python:3.12-bullseye",
 	// instead of the build to use a pre-built image.
@@ -19,7 +19,7 @@
     //   }
   //   },
     // "forwardPorts": [],
-	// "remoteUser": "azureuser"
+	"remoteUser": "azureadmin"
 	
 	// "postCreateCommand": ""
 
