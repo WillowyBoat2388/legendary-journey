@@ -1,1 +1,30 @@
-help
+// The Dev Container format allows you to configure your environment. At the heart of it
+// is a Docker image or Dockerfile which controls the tools available in your environment.
+//
+// See https://aka.ms/devcontainer.json for more information.
+{
+	"name": "Bdn-app",
+	"privileged": true,
+	"image": "mcr.microsoft.com/devcontainers/python:3.12-bullseye",
+	// instead of the build to use a pre-built image.
+	
+	// Features add additional features to your environment. See https://containers.dev/features
+	// Beware: features are not supported on all platforms and may have unintended side-effects.
+	// "features": {
+	//   "ghcr.io/devcontainers/features/docker-in-docker": {
+    //     "moby": false
+    //   },
+	//   "ghcr.io/devcontainers/features/node:1": {
+    //   "version": "18"
+    //   }
+  //   },
+    // "forwardPorts": [],
+	// "remoteUser": "azureuser"
+	
+	// "postCreateCommand": ""
+
+	// Auto-start Superset after ensuring Docker is ready
+	// Run in foreground to see any errors, but don't block on failures
+	// "postStartCommand": "bash -c 'echo \"We are in the workspace directory: $PWD\"; pip install -r requirements.txt; pre-commit install -t commit-msg;'"
+
+}
