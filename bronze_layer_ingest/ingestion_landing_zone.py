@@ -4,7 +4,7 @@ import argparse
 
 # src_list = ['production-daily-data', 'reservoir', 'equipment-events', 'wellbore', 'facility-telemetry', 'well-telemetry']
 def requirements():
-    workspace_name = dbutils.secrets.get(scope='databricks', key='workspace_name')
+    workspace_name = dbutils.secrets.get(scope='databricks-keyvault', key='databricks_workspace_name')
     SCHEMA1  = f"{workspace_name}.landing"
 
 

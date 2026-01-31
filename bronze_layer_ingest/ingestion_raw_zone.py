@@ -5,7 +5,7 @@ import argparse
 
 def requirements(table):
 
-    workspace_name = dbutils.secrets.get(scope='databricks', key='workspace_name')
+    workspace_name = dbutils.secrets.get(scope='databricks-keyvault', key='databricks_workspace_name')
     SCHEMA1  = f"{workspace_name}.landing"
     SCHEMA2  = f"{workspace_name}.raw"
 
