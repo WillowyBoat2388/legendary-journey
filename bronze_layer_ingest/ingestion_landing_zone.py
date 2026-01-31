@@ -4,22 +4,16 @@ import argparse
 
 # src_list = ['production-daily-data', 'reservoir', 'equipment-events', 'wellbore', 'facility-telemetry', 'well-telemetry']
 def requirements():
-    
-    
-    # spark.sql("""
-    # CREATE EXTERNAL VOLUME IF NOT EXISTS ong_streamworkspace_37859.default.ong_sensorstream
-    # LOCATION 'abfss://analyticscontainer@analyticsstorage37859.dfs.core.windows.net/analytics';
-    # CREATE VOLUME IF NOT EXISTS ong_streamworkspace_37859.default.checkpoints;
-    # CREATE SCHEMA IF NOT EXISTS ong_streamworkspace_37859.landing;
-    # CREATE SCHEMA IF NOT EXISTS ong_streamworkspace_37859.raw;
-    # """)
-    
+    SCHEMA1  = f"{spark.conf.get('spark.databricks.workspacename')}.landing"
 
-    production_src = "/Volumes/ong_streamworkspace_37859/default/ong_sensorstream/output"
-    destinationlakeCheckpoints = "/Volumes/ong_streamworkspace_37859/default/checkpoints/landing"
-    outlake = "outlake.landing"
 
-    return production_src, destinationlakeCheckpoints, outlake
+    VOLUME_PATH = f"/Volumes/{spark.conf.get('spark.databricks.workspacename')}/default"
+
+    production_src = f"{VOLUME_PATH}/ong_sensorstream/output"
+    destinationlakeCheckpoints = f"{VOLUME_PATH}/checkpoints/landing"
+    # outlake = "outlake.landing"
+
+    return production_src, destinationlakeCheckpoints, SCHEMA1
 def telemetry_dump(production_source, source, checkPoints, outlake):
     print(f"{source.upper()} LANDINGZONE SINK")
     files_path = f'{production_source}/{source}'
