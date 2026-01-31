@@ -16,15 +16,34 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     name: 'Update git folder'
-    environment: Prod
+    # environment: Prod
     env:
       DATABRICKS_AUTH_TYPE: github-oidc
+      # DATABRICKS_HOST: ${{ vars.DATABRICKS_HOST }}
+      # DATABRICKS_CLIENT_ID: ${{ secrets.DATABRICKS_CLIENT_ID }}
+
       
     steps:
       - uses: actions/checkout@v3
-      # - uses: azure/login@v3
-      # DATABRICKS_HOST: ${{ vars.DATABRICKS_HOST }}
-      # DATABRICKS_CLIENT_ID: ${{ secrets.DATABRICKS_CLIENT_ID }}
+
+      - name: Azure login
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+      - name: Azure CLI
+        uses: azure/cli@v2
+        with:
+          inlineScript: |
+            export DATABRICKS_HOST=$(az keyvault show --name ${{ secrets.AZURE_KEYVAULT_NAME }} --query "properties.vaultUri" --output tsv)
+            export DATABRICKS_CLIENT_ID=$(az keyvault show --name ${{ secrets.AZURE_KEYVAULT_NAME }} --query "properties.vaultUri" --output tsv)
+
+      - name: Set Databricks Host and Client ID
+        run: |
+          cp include/terraform-module/outputs.json .github/workflows/outputs.json
+          echo "DATABRICKS_HOST=$(outputs.json)" >> $GITHUB_ENV
+          echo "DATABRICKS_CLIENT_ID=$(outputs.json)" >> $GITHUB_ENV
 
       - uses: databricks/setup-cli@main
       - name: Update git folder
