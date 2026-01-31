@@ -4,19 +4,21 @@ import json
 import argparse
 
 def requirements(table):
-    spark.sql(""" CREATE EXTERNAL VOLUME IF NOT EXISTS ong_streamworkspace_37859.default.resources
-    LOCATION 'abfss://analyticscontainer@analyticsstorage37859.dfs.core.windows.net/resources';""")
+    SCHEMA1  = f"{spark.conf.get('spark.databricks.workspacename')}.landing"
+    SCHEMA2  = f"{spark.conf.get('spark.databricks.workspacename')}.raw"
+
+    VOLUME_PATH = f"/Volumes/{spark.conf.get('spark.databricks.workspacename')}/default"
     
-    sourcezone = "outlake.landing"
-    destzone = "outlake.raw"
+    sourcezone = SCHEMA1
+    destzone = SCHEMA2
 
     source_table = f'{sourcezone}.`{table}`'
     dest_table = f'{destzone}.`{table}`'
     # src_list = ['production-daily-data', 'reservoir', 'equipment-events', 'wellbore', 'facility-telemetry', 'well-telemetry']
     
     
-    checkPoint = f"/Volumes/ong_streamworkspace_37859/default/checkpoints/raw/{dest_table}"
-    schema_json  = f"/Volumes/ong_streamworkspace_37859/default/resources/contracts/producer/{table}.json"
+    checkPoint = f"{VOLUME_PATH}/checkpoints/raw/{dest_table}"
+    schema_json  = f"/Workspaces/Shared/wellanalysisstream/resources/contracts/producer/{table}.json"
 
     with open(schema_json, "r") as f:
         loaded_json_data = json.load(f)

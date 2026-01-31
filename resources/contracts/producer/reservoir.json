@@ -1,0 +1,35 @@
+{
+  "type": "struct",
+  "fields": [
+    {
+      "name": "client_id", "type": "string", "nullable": false }, 
+    {
+      "name": "reservoir_id", "type": "string", "nullable": false }, 
+    {
+      "name": "timestamp", "type": "long", "nullable": false },
+    {
+      "name": "avg_reservoir_pressure_psi", "type": "long", "nullable": false },
+    {
+      "name": "pressure_decline_rate_psi_per_day", "type": "long", "nullable": false },
+    {
+      "name": "avg_reservoir_temp_f", "type": "long", "nullable": false },
+    {
+      "name": "active_producing_wells", "type": "integer", "nullable": false },
+    {
+      "name": "cumulative_production_oil__mmbbl", "type": "float", "nullable": false },
+    {
+      "name": "cumulative_production_gas_bcf", "type": "float", "nullable": false },
+    {
+      "name": "estimated_remaining_reserves_mmbbl", "type": "float", "nullable": false },
+    {
+      "name": "recovery_factor_pct", "type": "float", "nullable": false },
+    {
+      "name": "water_injection_rate_bpd", "type": "float", "nullable": true },
+    {
+      "name": "gas_injection_rate_mcfd", "type": "float", "nullable": false },
+    {
+      "name": "partition_identity", "type": "string", "nullable": false },
+    {
+      "name": "_rescued_data", "type": "string", "nullable": true }
+  ]
+}

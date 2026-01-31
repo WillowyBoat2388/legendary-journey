@@ -1,0 +1,27 @@
+{
+  "type": "struct",
+  "fields": [
+    {
+      "name": "client_id", "type": "string", "nullable": false }, 
+    {
+      "name": "asset_id", "type": "string", "nullable": false }, 
+    {
+      "name": "asset_type", "type": "string", "nullable": false },
+    {
+      "name": "timestamp", "type": "long", "nullable": false },
+    {
+      "name": "event_type", "type": "string", "nullable": false },
+    {
+      "name": "severity", "type": "string", "nullable": false },
+    {
+      "name": "equipment", "type": "string", "nullable": false },
+    {
+      "name": "description", "type": "string", "nullable": true },
+    {
+      "name": "requires_action", "type": "string", "nullable": false },
+    {
+      "name": "partition_identity", "type": "string", "nullable": false },
+    {
+      "name": "_rescued_data", "type": "string", "nullable": true }
+  ]
+}

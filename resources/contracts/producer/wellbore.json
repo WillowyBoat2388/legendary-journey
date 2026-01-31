@@ -1,0 +1,35 @@
+{
+  "type": "struct",
+  "fields": [
+    {
+      "name": "client_id", "type": "string", "nullable": false }, 
+    {
+      "name": "wellbore_id", "type": "string", "nullable": false }, 
+    {
+      "name": "well_id", "type": "string", "nullable": false },
+    {
+      "name": "timestamp", "type": "long", "nullable": false },
+    {
+      "name": "measured_depth_ft", "type": "long", "nullable": false },
+    {
+      "name": "true_vertical_depth_ft", "type": "long", "nullable": false },
+    {
+      "name": "inclination_deg", "type": "long", "nullable": false },
+    {
+      "name": "azimuth_deg", "type": "float", "nullable": false },
+    {
+      "name": "bottom_hole_pressure_psi", "type": "long", "nullable": false },
+    {
+      "name": "fluid_level_ft", "type": "long", "nullable": false },
+    {
+      "name": "casing_pressure_psi", "type": "long", "nullable": true },
+    {
+      "name": "tubing_pressure_psi", "type": "long", "nullable": false },
+    {
+      "name": "annular_pressure_psi", "type": "long", "nullable": false },
+    {
+      "name": "partition_identity", "type": "string", "nullable": false },
+    {
+      "name": "_rescued_data", "type": "string", "nullable": true }
+  ]
+}

@@ -1,0 +1,43 @@
+{
+  "type": "struct",
+  "fields": [
+    {
+      "name": "entity_type", "type": "string", "nullable": false },
+    {
+      "name": "client_id", "type": "string", "nullable": false }, 
+    {
+      "name": "facility_id", "type": "string", "nullable": false }, 
+    {
+      "name": "sensor_id", "type": "string", "nullable": false },
+    {
+      "name": "sensor_type", "type": "string", "nullable": false },
+    {
+      "name": "location", "type": "string", "nullable": false },
+    {
+      "name": "timestamp", "type": "long", "nullable": false },
+    {
+      "name": "value", "type": "float", "nullable": false },
+    {
+      "name": "unit", "type": "string", "nullable": false },
+    {
+      "name": "quality", "type": "string", "nullable": true },
+    {
+      "name": "partition_identity", "type": "string", "nullable": false },
+    {
+      "name": "total_oil_flow_bpd", "type": "float", "nullable": true },
+    {
+      "name": "total_gas_flow_mcfd", "type": "float", "nullable": true },
+    {
+      "name": "total_water_flow_bpd", "type": "float", "nullable": true },
+    {
+      "name": "separator_pressure_psi", "type": "float", "nullable": true },
+    {
+      "name": "separator_temp_f", "type": "float", "nullable": true},
+    {
+      "name": "tank_level_ft", "type": "float", "nullable": true},
+    {
+      "name": "compressor_status", "type": "string", "nullable": true },
+    {
+      "name": "_rescued_data", "type": "string", "nullable": true }
+  ]
+}
