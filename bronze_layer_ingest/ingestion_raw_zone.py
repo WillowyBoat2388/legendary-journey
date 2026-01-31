@@ -4,10 +4,12 @@ import json
 import argparse
 
 def requirements(table):
-    SCHEMA1  = f"{spark.conf.get('spark.databricks.workspacename')}.landing"
-    SCHEMA2  = f"{spark.conf.get('spark.databricks.workspacename')}.raw"
 
-    VOLUME_PATH = f"/Volumes/{spark.conf.get('spark.databricks.workspacename')}/default"
+    workspace_name = dbutils.secrets.get(scope='databricks', key='workspace_name')
+    SCHEMA1  = f"{workspace_name}.landing"
+    SCHEMA2  = f"{workspace_name}.raw"
+
+    VOLUME_PATH = f"/Volumes/{workspace_name}/default"
     
     sourcezone = SCHEMA1
     destzone = SCHEMA2

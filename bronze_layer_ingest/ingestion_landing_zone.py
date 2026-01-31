@@ -4,10 +4,11 @@ import argparse
 
 # src_list = ['production-daily-data', 'reservoir', 'equipment-events', 'wellbore', 'facility-telemetry', 'well-telemetry']
 def requirements():
-    SCHEMA1  = f"{spark.conf.get('spark.databricks.workspacename')}.landing"
+    workspace_name = dbutils.secrets.get(scope='databricks', key='workspace_name')
+    SCHEMA1  = f"{workspace_name}.landing"
 
 
-    VOLUME_PATH = f"/Volumes/{spark.conf.get('spark.databricks.workspacename')}/default"
+    VOLUME_PATH = f"/Volumes/{workspace_name}/default"
 
     production_src = f"{VOLUME_PATH}/ong_sensorstream/output"
     destinationlakeCheckpoints = f"{VOLUME_PATH}/checkpoints/landing"
