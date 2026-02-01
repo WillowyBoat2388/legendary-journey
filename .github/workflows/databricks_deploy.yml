@@ -37,7 +37,8 @@ jobs:
         with:
           inlineScript: |
             export DATABRICKS_HOST=$(az keyvault show --name ${{ secrets.AZURE_KEYVAULT_NAME }} --query "properties.vaultUri" --output tsv)
-            export DATABRICKS_CLIENT_ID=$(az keyvault show --name ${{ secrets.AZURE_KEYVAULT_NAME }} --query "properties.vaultUri" --output tsv)
+            export DATABRICKS_CLIENT_ID=$(az keyvault secret show --name ${{ secrets.AZURE_KEYVAULT_NAME }} --query "properties.vaultUri" --output tsv)
+            export DATABRICKS_WORKSPACE=$(az keyvault show --name ${{ secrets.AZURE_KEYVAULT_NAME }} --query "properties.vaultUri" --output tsv)
 
       - name: Set Databricks Host and Client ID
         run: |
