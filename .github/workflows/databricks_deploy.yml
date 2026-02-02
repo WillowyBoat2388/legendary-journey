@@ -49,4 +49,4 @@ jobs:
       - uses: databricks/setup-cli@main
       - name: Update git folder
         # Set your workspace path and branch name here
-        run: databricks repos update /Workspace/ong_workflow --branch main
+        run: databricks repos update /${{env.DATABRICKS_WORKSPACE}}/ong_workflow --branch main
