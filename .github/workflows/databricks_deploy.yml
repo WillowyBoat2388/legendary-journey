@@ -35,7 +35,7 @@ jobs:
         with:
           inlineScript: |
             echo DATABRICKS_HOST=$(az keyvault secret show --name "databricks-workspace-url" --vault-name ${{ secrets.AZURE_KEY_VAULT_NAME }} --query "value" -o tsv) >> $GITHUB_ENV
-            echo DATABRICKS_CLIENT_ID=$(az keyvault secret show --name "databricks-workspace-id" --vault-name ${{ secrets.AZURE_KEY_VAULT_NAME }} --query "value" -o tsv) >> $GITHUB_ENV
+            echo DATABRICKS_CLIENT_ID=${{ secrets.AZURE_CLIENT_ID }} >> $GITHUB_ENV
 
       
       - uses: databricks/setup-cli@main
