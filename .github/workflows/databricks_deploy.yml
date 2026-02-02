@@ -17,8 +17,8 @@ jobs:
     runs-on: ubuntu-latest
     name: 'Update git folder'
     # environment: Prod
-    env:
-      DATABRICKS_AUTH_TYPE: default
+    # env:
+      # DATABRICKS_AUTH_TYPE: default
 
       
     steps:
