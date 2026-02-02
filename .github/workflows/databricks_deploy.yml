@@ -6,7 +6,7 @@ on:
   push:
     branches:
       # Set your base branch name here
-      - git-folder-cicd-example, main
+      [git-folder-cicd-example, main]
 
 permissions:
   id-token: write
@@ -19,8 +19,6 @@ jobs:
     # environment: Prod
     env:
       DATABRICKS_AUTH_TYPE: github-oidc
-      # DATABRICKS_HOST: ${{ vars.DATABRICKS_HOST }}
-      # DATABRICKS_CLIENT_ID: ${{ secrets.DATABRICKS_CLIENT_ID }}
 
       
     steps:
@@ -36,17 +34,11 @@ jobs:
         uses: azure/cli@v2
         with:
           inlineScript: |
-            export DATABRICKS_HOST=$(az keyvault show --name ${{ secrets.AZURE_KEYVAULT_NAME }} --query "properties.vaultUri" --output tsv)
-            export DATABRICKS_CLIENT_ID=$(az keyvault secret show --name ${{ secrets.AZURE_KEYVAULT_NAME }} --query "properties.vaultUri" --output tsv)
-            export DATABRICKS_WORKSPACE=$(az keyvault show --name ${{ secrets.AZURE_KEYVAULT_NAME }} --query "properties.vaultUri" --output tsv)
+            echo DATABRICKS_HOST=$(az keyvault secret show --name "databricks-workspace-url" --vault-name ${{ secrets.AZURE_KEY_VAULT_NAME }} --query "value") >> $GITHUB_ENV
+            echo DATABRICKS_CLIENT_ID=$(az keyvault secret show --name "databricks-workspace-resource-id" --vault-name ${{ secrets.AZURE_KEY_VAULT_NAME }} --query "value") >> $GITHUB_ENV
 
-      - name: Set Databricks Host and Client ID
-        run: |
-          cp include/terraform-module/outputs.json .github/workflows/outputs.json
-          echo "DATABRICKS_HOST=$(outputs.json)" >> $GITHUB_ENV
-          echo "DATABRICKS_CLIENT_ID=$(outputs.json)" >> $GITHUB_ENV
-
+      
       - uses: databricks/setup-cli@main
       - name: Update git folder
         # Set your workspace path and branch name here
-        run: databricks repos update /${{env.DATABRICKS_WORKSPACE}}/ong_workflow --branch main
+        run: databricks repos update /Shared/wellanalysisstream --branch main

@@ -2,6 +2,7 @@ from pyspark.sql.types import *
 from pyspark.sql.functions import *
 import json
 import argparse
+# import os
 
 def requirements(table):
 
@@ -20,7 +21,7 @@ def requirements(table):
     
     
     checkPoint = f"{VOLUME_PATH}/checkpoints/raw/{dest_table}"
-    schema_json  = f"file:/Workspaces/Shared/wellanalysisstream/resources/contracts/producer/{table}.json"
+    schema_json  = f"../resources/contracts/producer/{table}.json"
 
     with open(schema_json, "r") as f:
         loaded_json_data = json.load(f)
