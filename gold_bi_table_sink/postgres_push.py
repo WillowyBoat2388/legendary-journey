@@ -3,8 +3,8 @@ from pyspark.sql.functions import *
 
 secret_name = str(dbutils.secrets.get(scope='databricks-keyvault', key='databricks-workspace-name')).lower()
 workspace_name = secret_name.replace("-", "_")
-SCHEMA1  = f"{workspace_name}.raw"
-SCHEMA2  = f"{workspace_name}.base"
+
+SCHEMA2  = f"{workspace_name}.serving"
 
 
 df = spark.read.table(f"{SCHEMA2}.well_monitoring")
