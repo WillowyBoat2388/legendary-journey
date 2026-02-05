@@ -1,8 +1,7 @@
 from pyspark.sql.types import *
 from pyspark.sql.functions import *
 
-
-spark.conf.set("spark.sql.shuffle.partitions", "1")
+spark.conf.set("spark.sql.shuffle.partitions", "400") 
 secret_name = str(dbutils.secrets.get(scope='databricks-keyvault', key='databricks-workspace-name')).lower()
 workspace_name = secret_name.replace("-", "_")
 SCHEMA1  = f"{workspace_name}.raw"
@@ -17,12 +16,17 @@ source_table1 = f'{sourcezone}.`facility-telemetry`'
 source_table2 = f'{sourcezone}.`well-telemetry`'
 checkPoint = f'{VOLUME_PATH}/checkpoints/base/firm_info'
 
+# dbutils.fs.rm(checkPoint, recurse=True)
+
 dest_table = f'{destzone}.firm_info'
+
+spark.sql(f"DROP TABLE IF EXISTS {dest_table}")
 
 # Read and transform facility-telemetry
 facility_df = (spark.readStream
+    .option("startingTVersion", "0")
     .table(source_table1)
-    .select("client_id", "facility_id")
+    .select("client_id", "facility_id").dropDuplicates()
     .withColumn("facility_parts", split(col("facility_id"), "_"))
     .withColumn("FACILITY", concat_ws("_", slice(col("facility_parts"), 1, size(col("facility_parts")) - 1)))
     .withColumn("FACILITY_ID", col("facility_parts")[size(col("facility_parts")) - 1].cast("int"))
@@ -31,8 +35,9 @@ facility_df = (spark.readStream
 
 # Read and transform well-telemetry
 well_df = (spark.readStream
+    .option("startingVersion", "0")
     .table(source_table2)
-    .select("client_id")
+    .select("client_id").distinct()
 )
 
 # Join both streams
@@ -43,36 +48,38 @@ result_df = (joined_df
     .withColumn("client_parts", split(col("client_id"), "_"))
     .withColumn("DRILLING_FIRM", concat_ws("_", slice(col("client_parts"), 1, size(col("client_parts")) - 1)))
     .withColumn("FIRM_ID", col("client_parts")[size(col("client_parts")) - 1].cast("int"))
+    .drop("client_parts", "client_id")
     .select("DRILLING_FIRM", "FIRM_ID", "FACILITY", "FACILITY_ID")
 )
 
-# Preview facility_df intermediate output using memory sink
-query = (result_df
+# Write to destination
+(result_df
     .writeStream
-    .format("memory")
-    .queryName("preview")
-    .option("checkpointLocation", f"{VOLUME_PATH}/checkpoints/preview/test5")
+    .format("delta")
     .outputMode("append")
+    .option("checkpointLocation", checkPoint)
     .trigger(availableNow=True)
-    .start()
+    .toTable(dest_table)
 )
 
-# Wait for some data to arrive
-import time
-time.sleep(5)
-
-# Query the in-memory table to see results
-display(spark.sql("SELECT * FROM preview LIMIT 100"))
-
-# Stop the preview query
-query.stop()
-
-# Write to destination
-# (result_df
+# # Preview facility_df intermediate output using memory sink
+# query = (facility_df
 #     .writeStream
-#     .format("delta")
+#     .format("memory")
+#     .queryName("home")
+#     .option("checkpointLocation", f"{VOLUME_PATH}/checkpoints/test/01")
 #     .outputMode("append")
-#     .option("checkpointLocation", checkPoint)
 #     .trigger(availableNow=True)
-#     .toTable(dest_table)
+#     .start()
 # )
+
+# # Wait for some data to arrive
+# import time
+# time.sleep(10)
+# print(query.status, '\n', '\t\t', query.lastProgress, '\n\t\t')
+# # Query the in-memory table to see results
+# display(spark.sql("SELECT * FROM home LIMIT 100"))
+
+# # Stop the preview query
+# query.stop()
+
