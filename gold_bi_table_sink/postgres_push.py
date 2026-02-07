@@ -14,11 +14,6 @@ database_host = "jdbc:postgresql://ep-shy-grass-a9d9sdtz-pooler.gwc.azure.neon.t
 table1 = "well_monitoring"
 table2 = "firm_info"
 
-
-# Rename columns with special characters to avoid PostgreSQL quoting issues
-df1 = df1.withColumnRenamed("flow_bbl/d", "flow_bbl_d") \
-         .withColumnRenamed("gas_composition_mol%", "gas_composition_mol_pct") \
-         .withColumnRenamed("vibration_mm/s", "vibration_mm_s")
 (df1.write
      .format("jdbc")
      .option("url", f"{database_host}")
