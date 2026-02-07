@@ -10,7 +10,7 @@ database = dbutils.secrets.get(scope='databricks-keyvault', key='postgres-sink')
 df1 = spark.read.table(f"{SCHEMA2}.well_monitoring")
 df2 = spark.read.table(f"{SCHEMA1}.firm_info")
 
-database_host = "jdbc:postgresql://ep-shy-grass-a9d9sdtz-pooler.gwc.azure.neon.tech/georesearchpartner?user=neondb_owner&password=npg_p7Vg9cmUtqLn&sslmode=require&channelBinding=require"
+database_host = database
 table1 = "well_monitoring"
 table2 = "firm_info"
 
