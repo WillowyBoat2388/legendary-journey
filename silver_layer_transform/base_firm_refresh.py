@@ -1,7 +1,7 @@
 from pyspark.sql.types import *
 from pyspark.sql.functions import *
 
-spark.conf.set("spark.sql.shuffle.partitions", "400") 
+spark.conf.set("spark.sql.shuffle.partitions", "400")
 secret_name = str(dbutils.secrets.get(scope='databricks-keyvault', key='databricks-workspace-name')).lower()
 workspace_name = secret_name.replace("-", "_")
 SCHEMA1  = f"{workspace_name}.raw"

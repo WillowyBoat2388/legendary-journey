@@ -6,23 +6,23 @@ workspace_name = secret_name.replace("-", "_")
 SCHEMA1 = f"{workspace_name}.base"
 SCHEMA2 = f"{workspace_name}.serving"
 
-
+database = dbutils.secrets.get(scope='databricks-keyvault', key='postgres-sink')
 df1 = spark.read.table(f"{SCHEMA2}.well_monitoring")
-df2 = spark.read.table(f"{SCHEMA1}.well_monitoring")
-database_host = "ep-shy-grass-a9d9sdtz-pooler.gwc.azure.neon.tech"
-database_port = "5432" # update if you use a non-default port
-database_name = "georesearchpartner"
+df2 = spark.read.table(f"{SCHEMA1}.firm_info")
+
+database_host = "jdbc:postgresql://ep-shy-grass-a9d9sdtz-pooler.gwc.azure.neon.tech/georesearchpartner?user=neondb_owner&password=npg_p7Vg9cmUtqLn&sslmode=require&channelBinding=require"
 table1 = "well_monitoring"
 table2 = "firm_info"
-user = "neondb_user"
-password = "npg_p7Vg9cmUtqLn"
 
+
+# Rename columns with special characters to avoid PostgreSQL quoting issues
+df1 = df1.withColumnRenamed("flow_bbl/d", "flow_bbl_d") \
+         .withColumnRenamed("gas_composition_mol%", "gas_composition_mol_pct") \
+         .withColumnRenamed("vibration_mm/s", "vibration_mm_s")
 (df1.write
      .format("jdbc")
-     .option("url", f"jdbc:postgresql://{database_host}:{database_port}/{database_name}?sslmode=require&channel_binding=require")
+     .option("url", f"{database_host}")
      .option("dbtable", table1)
-     .option("user", user)
-     .option("password", password)
      .option("driver", "org.postgresql.Driver")
      .mode("append")
      .option("truncate", "false")
@@ -30,10 +30,8 @@ password = "npg_p7Vg9cmUtqLn"
 
 (df2.write
      .format("jdbc")
-     .option("url", f"jdbc:postgresql://{database_host}:{database_port}/{database_name}?sslmode=require&channel_binding=require")
+     .option("url", f"{database}")
      .option("dbtable", table2)
-     .option("user", user)
-     .option("password", password)
      .option("driver", "org.postgresql.Driver")
      .mode("append")
      .option("truncate", "false")
