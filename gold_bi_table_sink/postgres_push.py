@@ -8,7 +8,7 @@ SCHEMA2 = f"{workspace_name}.serving"
 
 database = dbutils.secrets.get(scope='databricks-keyvault', key='postgres-sink')
 df1 = spark.read.table(f"{SCHEMA2}.well_monitoring")
-df2 = spark.read.table(f"{SCHEMA1}.firm_info")
+df2 = spark.read.table(f"{SCHEMA1}.firm_info").orderBy("FIRM_ID","FACILITY_ID")
 
 database_host = database
 table1 = "well_monitoring"

@@ -47,7 +47,6 @@ result_df = (joined_df
     .withColumn("FIRM_ID", col("client_parts")[size(col("client_parts")) - 1].cast("int"))
     .drop("client_parts", "client_id")
     .select("DRILLING_FIRM", "FIRM_ID", "FACILITY", "FACILITY_ID")
-    .orderBy("FIRM_ID", "FACILITY_ID")
 )
 
 # Write to destination
