@@ -16,13 +16,13 @@ destzone = SCHEMA2
 source_table1 = f'{sourcezone}.`well-telemetry`'
 checkPoint = f'{VOLUME_PATH}/checkpoints/base/lease_test'
 
-dbutils.fs.rm(f'{VOLUME_PATH}/checkpoints/test/01', recurse=True)
 
 dest_table = f'{destzone}.lease'
 
 # Function to upsert microBatchOutputDF into Delta table using merge
 def upsertToDelta(df, batchId):
   # Pivot the dataframe to transform sensor readings into columns
+  df = df.withColumn("timestamp", date_trunc("second", "timestamp"))
   result_df = (df.groupBy("client_id", "well_id", "timestamp", "sensor_id")
     .pivot("col_name")
     .agg(first("value")))
@@ -44,27 +44,14 @@ def upsertToDelta(df, batchId):
 
 print("Ready to begin pushing for each batch")
      
-     
-     
-        
-display(spark.readStream.table(source_table1)
-    .withColumn("timestamp", to_timestamp("timestamp")).limit(1000)
-    , checkpointLocation = f"{VOLUME_PATH}/checkpoints/test/01"
-    )
 
-
-
-
-
-
-# (
-#     spark.readStream.table(source_table1)
-#         .withColumn("timestamp", to_timestamp("timestamp"))
-#         .withColumn("timestamp", date_trunc("MM-dd-yyyy HH:mm:ss", "timestamp"))
-#         .withColumn("col_name", concat_ws("_", "sensor_type", "unit"))
-#         .writeStream
-#         .option("checkpointLocation", checkPoint)
-#         .foreachBatch(upsertToDelta)
-#         .trigger(availableNow=True)
-#         .start()
-# )
+(
+    spark.readStream.table(source_table1)
+        .withColumn("timestamp", to_timestamp("timestamp"))
+        .withColumn("col_name", concat_ws("_", "sensor_type", "unit"))
+        .writeStream
+        .option("checkpointLocation", checkPoint)
+        .foreachBatch(upsertToDelta)
+        .trigger(availableNow=True)
+        .start()
+)

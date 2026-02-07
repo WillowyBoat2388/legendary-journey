@@ -16,15 +16,13 @@ source_table1 = f'{sourcezone}.`facility-telemetry`'
 source_table2 = f'{sourcezone}.`well-telemetry`'
 checkPoint = f'{VOLUME_PATH}/checkpoints/base/firm_info'
 
-# dbutils.fs.rm(checkPoint, recurse=True)
 
 dest_table = f'{destzone}.firm_info'
 
-spark.sql(f"DROP TABLE IF EXISTS {dest_table}")
+
 
 # Read and transform facility-telemetry
 facility_df = (spark.readStream
-    .option("startingTVersion", "0")
     .table(source_table1)
     .select("client_id", "facility_id").dropDuplicates()
     .withColumn("facility_parts", split(col("facility_id"), "_"))
@@ -35,7 +33,6 @@ facility_df = (spark.readStream
 
 # Read and transform well-telemetry
 well_df = (spark.readStream
-    .option("startingVersion", "0")
     .table(source_table2)
     .select("client_id").distinct()
 )
@@ -61,25 +58,4 @@ result_df = (joined_df
     .trigger(availableNow=True)
     .toTable(dest_table)
 )
-
-# # Preview facility_df intermediate output using memory sink
-# query = (facility_df
-#     .writeStream
-#     .format("memory")
-#     .queryName("home")
-#     .option("checkpointLocation", f"{VOLUME_PATH}/checkpoints/test/01")
-#     .outputMode("append")
-#     .trigger(availableNow=True)
-#     .start()
-# )
-
-# # Wait for some data to arrive
-# import time
-# time.sleep(10)
-# print(query.status, '\n', '\t\t', query.lastProgress, '\n\t\t')
-# # Query the in-memory table to see results
-# display(spark.sql("SELECT * FROM home LIMIT 100"))
-
-# # Stop the preview query
-# query.stop()
 
