@@ -1,0 +1,33 @@
+{
+  "type": "struct",
+  "fields": [
+    {
+      "name": "client_id", "type": "string", "nullable": false }, 
+    {
+      "name": "well_id", "type": "string", "nullable": false }, 
+    {
+      "name": "production_date", "type": "datetime", "nullable": false },
+    {
+      "name": "well_status", "type": "string", "nullable": false },
+    {
+      "name": "oil_rate_bpd", "type": "float", "nullable": true },
+    {
+      "name": "gas_rate_mcfd", "type": "float", "nullable": true },
+    {
+      "name": "water_rate_bpd", "type": "float", "nullable": true },
+    {
+      "name": "wellhead_pressure_psi", "type": "float", "nullable": true },
+    {
+      "name": "wellhead_temp_f", "type": "float", "nullable": true},
+    {
+      "name": "choke_size_64ths", "type": "float", "nullable": true },
+    {
+      "name": "gas_oil_ratio", "type": "float", "nullable": true},
+    {
+      "name": "water_cut_pct", "type": "float", "nullable": true },
+    {
+      "name": "lift_method", "type": "string", "nullable": true },
+    {
+      "name": "_rescued_data", "type": "string", "nullable": true }
+  ]
+}
