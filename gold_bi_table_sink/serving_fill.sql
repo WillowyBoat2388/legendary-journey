@@ -1,0 +1,43 @@
+CREATE OR REPLACE TEMPORARY VIEW mermaid AS (
+    WITH CTE1 AS (
+        select
+            split(client_id, '_') as client_id,
+            split(well_id, '_') as well_id,
+            split(sensor_id, '_') as sensor_id, timestamp, `flow_bbl/d`, `gas_composition_mol%`, level_ft, pressure_psi, `temperature_degF`, `vibration_mm/s`, location, status, quality
+        from base.lease
+    ),
+    CTE2 AS (
+        select 
+            cast(
+                element_at(client_id, 
+                size(client_id)) as int
+                ) as client_id, 
+            cast(
+                element_at(well_id, 
+                size(well_id)) as int
+                ) as well_id,
+            concat_ws('_', array_remove(well_id, element_at(well_id, size(well_id)))) as well_name,
+            cast(element_at(sensor_id, size(sensor_id)) as int) as sensor_id, timestamp, 
+            `flow_bbl/d` as flow_bbl_d, `gas_composition_mol%` as gas_composition_mol_pct, 
+            level_ft, pressure_psi, temperature_degF, 
+            `vibration_mm/s` as vibration_mm_s, location, status, quality
+        from cte1
+        order by client_id, well_id, sensor_id, timestamp
+    )
+    
+select *
+from cte2);
+
+CREATE TABLE IF NOT EXISTS well_monitoring AS 
+SELECT * FROM MERMAID;
+
+MERGE WITH SCHEMA EVOLUTION INTO well_monitoring AS w
+USING (
+    select *
+    from mermaid
+) AS c
+ON c.client_id=w.client_id and c.well_id=w.well_id and c.timestamp=w.timestamp and c.sensor_id=w.sensor_id
+WHEN MATCHED THEN
+  UPDATE SET *
+WHEN NOT MATCHED THEN
+  INSERT *
