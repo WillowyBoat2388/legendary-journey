@@ -1,5 +1,7 @@
+-- Create a temporary view 'mermaid' with cleaned and transformed lease data
 CREATE OR REPLACE TEMPORARY VIEW mermaid AS (
     WITH CTE1 AS (
+        -- Split IDs into arrays for further processing
         select
             split(client_id, '_') as client_id,
             split(well_id, '_') as well_id,
@@ -7,6 +9,7 @@ CREATE OR REPLACE TEMPORARY VIEW mermaid AS (
         from base.lease
     ),
     CTE2 AS (
+        -- Extract numeric IDs and well name, rename columns for clarity
         select 
             cast(
                 element_at(client_id, 
@@ -28,9 +31,11 @@ CREATE OR REPLACE TEMPORARY VIEW mermaid AS (
 select *
 from cte2);
 
+-- Create the well_monitoring table if it doesn't exist, using the mermaid view
 CREATE TABLE IF NOT EXISTS well_monitoring AS 
 SELECT * FROM MERMAID;
 
+-- Merge new data from mermaid into well_monitoring with schema evolution
 MERGE WITH SCHEMA EVOLUTION INTO well_monitoring AS w
 USING (
     select *
