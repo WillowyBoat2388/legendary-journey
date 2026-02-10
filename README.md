@@ -174,16 +174,6 @@ The `bronze_layer_ingest/` folder contains Python scripts and Jupyter notebooks 
 - `Landing Zone Pipeline SCRIPT.ipynb` — walkthrough of the landing zone ingestion, how to run locally and submit to Databricks.
 - `Raw Zone Schema Validation Pipeline SCRIPT.ipynb` — demonstrates validation logic and error handling.
 
-**How to run locally** (requires Python 3.9+, Databricks libraries):
-```bash
-python3 bronze_layer_ingest/ingestion_landing_zone.py --config ./config.json
-python3 bronze_layer_ingest/ingestion_raw_zone.py --config ./config.json
-```
-
-**How to run in Databricks** (submit as a job):
-- Upload scripts to a Databricks workspace.
-- Create a job that runs the scripts in sequence (landing → validation → raw).
-- Configure credentials and storage paths via environment or Databricks secrets.
 
 #### Silver Layer: Transformation & Curation
 
@@ -191,11 +181,6 @@ The `silver_layer_transform/` folder contains SQL transformation examples.
 
 **Files:**
 - `new_query.sql` — Example aggregation query that combines well telemetry and facility metadata to produce a curated dataset (e.g., rolling 24-hour averages by facility).
-
-**How to use:**
-- Load the query in a Databricks SQL notebook or the Databricks SQL editor.
-- Adapt the table names and field names to match your schema.
-- Create a view or materialized table to expose curated data to consumers.
 
 #### Infrastructure: Terraform Modules
 
@@ -209,13 +194,16 @@ The `include/terraform-module/` folder contains Terraform code to provision the 
 
 **How to deploy:**
 ```bash
-cd include/terraform-module/staging
-terraform init
-terraform plan
-terraform apply
+cd include/terraform-module/staging (terraform-module is the attached submodule repository)
+Provide the necessary secrets to allow access to your Azure cloud for deployment,
+Run Github Actions Workflow
 ```
 
-Repeat for `production/` in your production workflow.
+**How to use:**
+- Once the infrastructure is provisioned, provide the necessary secrets for the repo to be deployed to the workspace
+- Access the pipeline definitions and SQL scripts within the Databricks Workspace
+- Adapt the table names and field names to match your schema.
+- Create a view or materialized table to expose curated data to consumers.
 
 #### Data Contracts
 
@@ -278,6 +266,7 @@ As data volumes grew, the team evolved the platform:
 - Auto-scaling Databricks clusters: add workers as ingestion and transformation jobs demand compute.
 - Partition silver tables by (date, facility) to enable fast queries and efficient incremental updates.
 - Use clustering keys (e.g., well_id) to optimize join performance.
+- All managed programmatically using Terraform
 
 **Storage Scaling:**
 - Delta Lake's ACID semantics and time-travel features support large-scale data operations without data loss.
@@ -285,7 +274,7 @@ As data volumes grew, the team evolved the platform:
 - Archive old bronze data to cheaper tiers (e.g., Azure Archive Storage) after a retention period.
 
 **Job Orchestration:**
-- Use Databricks Workflows (or Airflow, if preferred) to schedule and monitor pipelines.
+- Use Databricks Workflows (or Azure Data Factory, if preferred) to schedule and monitor pipelines.
 - Set up alerting for pipeline failures or data quality issues.
 
 **Terraform Modules for Scale:**
@@ -330,7 +319,7 @@ Databricks workspaces support granular role-based access control (RBAC):
 - **Analysts** have read access to silver and gold tables only; they query via Databricks SQL or Superset.
 - **Geoscientists** have read access to domain-specific gold datasets (e.g., aggregated metrics by facility).
 
-Set up in Databricks Admin Console; manage with Terraform (`include/terraform-module/modules/databricks/`).
+Set up and manage with Terraform (`include/terraform-module/modules/databricks/`).
 
 ### Secrets & Credentials
 
@@ -373,23 +362,8 @@ Use GitHub Actions to enforce code and data quality gates:
 - **Approve** terraform changes before applying to production.
 - **Track** schema changes across environments (staging → prod).
 
-Example workflow (to be extended):
+Example workflows which can be extended can be found under the .github/workflows directories for both repositories:
 
-```yaml
-name: Deploy to Databricks
-on: [push]
-jobs:
-  validate:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - name: Run tests
-        run: pytest bronze_layer_ingest/ --tb=short
-      - name: Terraform plan
-        run: |
-          cd include/terraform-module/staging
-          terraform plan
-```
 
 (Adapt and expand based on your testing and deployment needs.)
 
@@ -410,7 +384,7 @@ The platform was adopted across GeoResults' operations, driving decisions on fie
 
 ### License
 
-This project is distributed under the terms of the [LICENSE](LICENSE) file included in this repository. Refer to it for reuse, modification and distribution rights.
+This project is distributed under the terms of the [LICENSE](LICENSE) file included in this repository. Refer to it for reuse, modification and distribution rights. Appreciation goes to the team at [**Beyond Data Network**](https://home.bdatanet.tech) for supporting and provding the resources which these demo is based on.
 
 ### Contributing
 
@@ -431,7 +405,7 @@ We welcome contributions, feedback and use-case adaptations. To contribute:
 
 For questions, ideas or general feedback on this platform template:
 
-- **Email**: [your-team@d-konsult.example.com]
+- **Email**: [onidajo99@gmail.com, engineering@bdatanet.tech]
 - **Issues**: Open an issue on this repository with a clear description of the problem or feature request.
 - **Discussions**: Start a discussion for architecture or design questions.
 
