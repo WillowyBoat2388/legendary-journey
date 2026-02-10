@@ -1,4 +1,100 @@
 # OnG Upstream Data Management Case Study
+An Oil & Gas data management &amp; visualisation architecture demo, with an end-to-end data engineering style using a scenario-based approach to illustrate a template-contract approach to organisation data management projects.
+
+
+## Navigation / Quick Access
+Quickly move to the section you are interested in by clicking on the appropriate link:
+
+* [Overview](#overview)
+* [Phase 1(Preamble)](#phase-1)
+* [Phase 2(Project Implementation)](#phase-2)
+* [Extensibility](#xtensibility)
+* [Phase 5](#phase-5)
+* [Outcome](#outcome)
+
+
+## Overview
+---------------------------------------------------------------------------------------
+
+### Scenario
+  A Data & AI consulting firm(hereafter called: D-Konsult) has been contracted by an Oil & Gas upstream research firm(hereafter called: GeoResults. As a major partner of D-Konsult, GeoResults has made demands of D-Konsult's executives, resulting in the Engineering & Analytics teams being placed under embargo - provide visible results ASAP. We will here-after then, scrutinize the different parts of the solution architecture that D-Konsult's team settle on/result to.
+
+#### Context
+  This project repository contains the primary building block for a real-time enabled Databricks Workspace, coupled with a dashboard engine to quickly visualize, share and design data products. 
+
+#### Technologies
+- **Databricks**
+- **Azure Cloud**
+- **Terraform**
+- **Github Actions**
+- **Superset**
+
+### Phases
+- ***Phase 1***: High-level Conceptual Model
+- ***Phase 2***: Engineering Patterns & Implementation
+- ***Phase 3***: Delivery Patterns, Insights Generation
+- ***Phase 4***: Scaling & Management
+- ***Phase 5***: Governance & Compliance
+ 
+```mermaid
+flowchart TB
+  style P1 fill:#f2f8ff,stroke:#0366d6,stroke-width:2px
+  style P2 fill:#eef6ff,stroke:#0366d6
+  style P3 fill:#fff7e6,stroke:#d97706
+  style P4 fill:#fff7e6,stroke:#d97706
+  style P5a fill:#e6ffef,stroke:#059669
+  style P5b fill:#e6ffef,stroke:#059669
+  style P5c fill:#e6ffef,stroke:#059669
+  style P5d fill:#e6ffef,stroke:#059669
+
+  P1["**Phase 1** Conceptual Overview"] --> P2["**Phase 2** Engineering Implementation"]
+  P2 --> P3["**Phase 3**  Monitoring Patterns"]
+  P2 --> P4["**Phase 4**  Scaling"]
+  P3 --> P5a["**Phase 5a** Maintenance"]
+  P3 --> P5b["**Phase 5b** Governance"]
+  P4 --> P5c["**Phase 5c** Security & Authentication"]
+  P4 --> P5d["**Phase 5d** Compliance"]
+```
+
+## Phase 1
+---------------------------------------------------------------------
+
+I will leave potential discussions on the complexities of designing data architecture and project implementation documents for a second article. A lot of data management and governance issues flow downstream from these decisions, and I believe context determines how that is handled, but I will maintain the focus on tackling data processing and downstream tasks for this write-up.
+
+
+
+
+## Phase 2
+---------------------------------------------------------------------
+### Navigation / Quick Access
+  Quickly move to the section you are interested in by clicking on the appropriate link:
+
+* [Objectives](#objectives)
+* [Architecture](#architecture)
+* [Development](#development)
+
+### Objectives
+---------------------------------------------------------------------
+* ✅ Provide a cloud data store for oil site sensor events data and other on-site events
+* ✅ Create a logical storage design using a variant of the Databricks Medallion Architecture
+* ✅ Model incoming data stream for use by downstream analysts and geoscientists/researchers 
+* ✅ Create a near real-time monitoring dashboard for on-site sensor readings
+
+### Architecture
+  ![alt text](diagram-export-1-17-2026-10_14_40-AM.png)
+
+
+
+
+
+## Extensibility
+
+
+
+## Phase 5
+
+
+# OnG Upstream Data Management Case Study
 
 An Oil & Gas data management & visualisation architecture demo, with an end-to-end data engineering style using a scenario-based approach to illustrate a template-contract approach to organisation data management projects.
 
