@@ -10,8 +10,6 @@ SCHEMA2 = f"{workspace_name}.serving"
 # Retrieve the Postgres connection string from Databricks secrets
 database = dbutils.secrets.get(scope='databricks-keyvault', key='postgres-sink')
 
-# Read data from the well_monitoring and firm_info tables in Spark
-spark.sql(f"CREATE TABLE IF NOT EXISTS {SCHEMA2}.checkpoints (checkpoint_timestamp timestamp)")
 
 # Get the max timestamp from Postgres to filter only new records
 max_timestamp_query = "(SELECT COALESCE(MAX(timestamp), '1970-01-01'::timestamp) as max_ts FROM well_monitoring) as subq"
@@ -23,6 +21,7 @@ max_timestamp_df = spark.read \
     .load()
 max_timestamp = max_timestamp_df.collect()[0][0]
 print(f"Begining Reading and Filtering. Current Most Recent Timestamp Inserted: {max_timestamp}")
+# Read data from the well_monitoring and firm_info tables in Spark
 df1 = spark.read.table(f"{SCHEMA2}.well_monitoring").filter(col("timestamp") > lit(max_timestamp))
 
 df2 = spark.read.table(f"{SCHEMA1}.firm_info").orderBy("FIRM_ID","FACILITY_ID")
