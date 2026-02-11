@@ -29,7 +29,7 @@ CREATE OR REPLACE TEMPORARY VIEW mermaid AS (
     ),
     CTE3 AS (
         -- Select only unique client_id, well_id, timestamp and sensor_id
-        select distinct client_id, well_id, timestamp, sensor_id, flow_bbl_d, gas_composition_mol_pct, level_ft, pressure_psi, temperature_degF, vibration_mm_s, location, status, quality
+        select distinct client_id, well_id, well_name, timestamp, sensor_id, flow_bbl_d, gas_composition_mol_pct, level_ft, pressure_psi, temperature_degF, vibration_mm_s, location, status, quality
         from cte2
     )
     
@@ -47,5 +47,7 @@ USING (
     from mermaid
 ) AS c
 ON c.client_id=w.client_id and c.well_id=w.well_id and c.timestamp=w.timestamp and c.sensor_id=w.sensor_id
+WHEN MATCHED THEN
+    UPDATE SET *
 WHEN NOT MATCHED THEN
   INSERT *
