@@ -1,3 +1,3 @@
 [submodule "terraform-iac-mod"]
 	path = include/terraform-module
-	url = https://WillowyBoat2388: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@github.com/WillowyBoat2388/desirable-terraform-module.git
+	url = https://github.com/WillowyBoat2388/desirable-terraform-module.git
