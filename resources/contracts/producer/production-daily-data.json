@@ -6,7 +6,7 @@
     {
       "name": "well_id", "type": "string", "nullable": false }, 
     {
-      "name": "production_date", "type": "datetime", "nullable": false },
+      "name": "production_date", "type": "timestamp", "nullable": false },
     {
       "name": "well_status", "type": "string", "nullable": false },
     {
