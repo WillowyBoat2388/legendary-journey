@@ -26,6 +26,18 @@ df1 = spark.read.table(f"{SCHEMA2}.well_monitoring").filter(col("timestamp") > l
 
 df2 = spark.read.table(f"{SCHEMA1}.firm_info").orderBy("FIRM_ID","FACILITY_ID")
 
+# Read existing firm_info records from Postgres to identify what's already there
+existing_firm_info = spark.read \
+    .format("jdbc") \
+    .option("url", database) \
+    .option("dbtable", "firm_info") \
+    .option("driver", "org.postgresql.Driver") \
+    .load() \
+    .select("firm_id", "facility_id")
+
+# Filter df2 to only include records that don't already exist in Postgres
+df2_new = df2.join(existing_firm_info, ["firm_id", "facility_id"], "left_anti")
+
 database_host = database
 table1 = "well_monitoring"
 table2 = "firm_info"
@@ -39,9 +51,9 @@ print("Beginning Write to Postgres DF1(Well_monitoring)")
      .mode("append")
      .option("truncate", "false")
      .save())
-print("Beginning Write to Postgres DF2(Firm Info)")
-# Write df2 to the firm_info table in Postgres using JDBC
-(df2.write
+print(f"Beginning Write to Postgres DF2(Firm Info) - {df2_new.count()} new records")
+# Write df2_new to the firm_info table in Postgres using JDBC (only new records)
+(df2_new.write
      .format("jdbc")
      .option("url", f"{database}")
      .option("dbtable", table2)
