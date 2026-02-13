@@ -72,9 +72,3 @@ WHEN MATCHED THEN
     UPDATE SET *
 WHEN NOT MATCHED THEN
     INSERT *;
-
--- Add table properties for better performance
-ALTER TABLE serving.well_monitoring SET TBLPROPERTIES ('delta.autoOptimize.optimizeWrite' = 'true', 'delta.autoOptimize.autoCompact' = 'true');
-
--- Optimize table by clustering on timestamp column
-OPTIMIZE serving.well_monitoring ZORDER BY (timestamp);

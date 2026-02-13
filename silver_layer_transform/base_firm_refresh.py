@@ -1,8 +1,6 @@
 from pyspark.sql.types import *
 from pyspark.sql.functions import *
 
-# Set Spark shuffle partitions for performance tuning
-spark.conf.set("spark.sql.shuffle.partitions", "400")
 # Enable adaptive query execution for better join performance
 spark.conf.set("spark.sql.adaptive.enabled", "true")
 spark.conf.set("spark.sql.adaptive.coalescePartitions.enabled", "true")
@@ -39,7 +37,7 @@ dest_table = f'{destzone}.firm_info'
 facility_df = (
     spark.readStream
     .table(source_table1)
-    .select("client_id", "facility_id")
+    .select("client_id", "facility_id").dropDuplicates()
     .withColumn("facility_parts", split(col("facility_id"), "_"))
     .withColumn("FACILITY", concat_ws("_", slice(col("facility_parts"), 1, size(col("facility_parts")) - 1)))
     .withColumn("FACILITY_ID", col("facility_parts")[size(col("facility_parts")) - 1].cast("int"))
@@ -52,7 +50,7 @@ print("[DEBUG] facility_df streaming transformation defined.")
 well_df = (
     spark.readStream
     .table(source_table2)
-    .select("client_id")
+    .select("client_id").distinct()
 )
 print("[DEBUG] well_df streaming transformation defined.")
 
