@@ -68,7 +68,5 @@ USING (
     FROM mermaid
 ) AS c
 ON c.client_id=w.client_id AND c.well_id=w.well_id AND c.timestamp=w.timestamp AND c.sensor_id=w.sensor_id
-WHEN MATCHED THEN
-    UPDATE SET *
 WHEN NOT MATCHED THEN
     INSERT *;
