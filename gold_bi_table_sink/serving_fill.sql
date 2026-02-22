@@ -45,13 +45,6 @@ CREATE OR REPLACE TEMPORARY VIEW mermaid AS (
             quality
         FROM cte1
         order by client_id, well_id, sensor_id, timestamp
-    ),
-    CTE3 AS (
-        -- Remove duplicates and sort by timestamp
-        SELECT DISTINCT client_id, well_id, well_name, timestamp, sensor_id, 
-               flow_bbl_d, gas_composition_mol_pct, level_ft, pressure_psi, 
-               temperature_degF, vibration_mm_s, location, status, quality
-        FROM cte2
     )
     SELECT * FROM cte2
 );
