@@ -119,9 +119,9 @@ The team sketched a simple data journey:
 
 **Bronze (Landing / Raw)**: Raw payloads land in cloud storage unchanged, with metadata about arrival time and source. A separate validation pass checks each payload against the producer contract, flagging mismatches.
 
-**Silver (Curated)**: Cleaned, deduplicated, joined and enriched; structured for analytics. Each table is partitioned by date/facility for query efficiency. This is where analysts spend their time.
+**Silver (Curated)**: Cleaned, deduplicated, joined and enriched; structured for heavy analytics use-cases. Each table is partitioned by date/facility for query efficiency. These are the tables from which downstream models, predictions and experiments are built.
 
-**Gold (Products)**: Highly specific datasets for dashboards, reports or machine learning. Aggregates, rolling metrics, and feature sets live here.
+**Gold (Products)**: Highly specific datasets for dashboards or reports. Aggregates, rolling metrics, and feature sets live here.
 
 **Contracts**: Each producer publishes a JSON schema. The platform ingests and validates against it. If a well stops sending a pressure field, it fails validation and triggers an alert—not a silent data quality issue weeks later.
 
@@ -168,19 +168,27 @@ The `bronze_layer_ingest/` folder contains Python scripts and Jupyter notebooks 
 **Files:**
 - `ingestion_landing_zone.py` — Reads raw payloads from cloud storage and writes them to the bronze landing table, preserving original format and metadata.
 - `ingestion_raw_zone.py` — Reads landing records, validates against producer contracts (from `resources/contracts/`), applies basic transformations (e.g., type coercion), and writes to the raw table.
-- `raw_zone_schema_validation.py` — Validates incoming JSON payloads against contract schemas; used as a reusable library by the ingestion pipeline.
 
 **Notebooks** (in `bronze_layer_ingest/notebooks/`):
-- `Landing Zone Pipeline SCRIPT.ipynb` — walkthrough of the landing zone ingestion, how to run locally and submit to Databricks.
-- `Raw Zone Schema Validation Pipeline SCRIPT.ipynb` — demonstrates validation logic and error handling.
+- `Landing Zone Pipeline SCRIPT.ipynb` — Test Notebook to walkthrough landing zone ingestion, test run locally and submit to Databricks.
 
 
 #### Silver Layer: Transformation & Curation
 
-The `silver_layer_transform/` folder contains SQL transformation examples.
+The `silver_layer_transform/` folder contains streaming transformations on validated raw data from the Bronze Zone using Pyspark and SQL.
 
 **Files:**
-- `new_query.sql` — Example aggregation query that combines well telemetry and facility metadata to produce a curated dataset (e.g., rolling 24-hour averages by facility).
+- `base_firm_refresh.py` — aggregation query that joins well telemetry and facility metadata to produce a curated dataset about data sources (e.g., Facility Identity delineated by management firm).
+- `base_lease_refresh.py` — transformation query that pivots well-telemetry data to produce a table that holds well production information (e.g., second-by-second play of well performance).
+- `base-reservoir-view.sql` — aggregation query that showcases reservoir production dataset.
+
+#### Gold Layer: Serving Tables
+
+The `gold_bi_table_sink/` folder serves as the source of user tables which server dashboards and reports, from which analysts can answer business questions and satisfy stakeholder needs.
+
+**Files:**
+- `serving_fill.sql` - Rolling Merge query that feeds a monitoring dashboard table, from which production performance can be monitored and alerts set-up, by non-technical users.
+- `postgres_push.py` - Example Script to push gold datasets to external postgres tables to satisfy third-party partners and auditors
 
 #### Infrastructure: Terraform Modules
 
@@ -201,6 +209,7 @@ Run Github Actions Workflow
 
 **How to use:**
 - Once the infrastructure is provisioned, provide the necessary secrets for the repo to be deployed to the workspace
+- Collect Events Hub Endpoint which site-telemetry sensor readings can be sent to in real-time
 - Access the pipeline definitions and SQL scripts within the Databricks Workspace
 - Adapt the table names and field names to match your schema.
 - Create a view or materialized table to expose curated data to consumers.
@@ -223,13 +232,13 @@ Schemas are defined in `resources/contracts/`. Each producer (well, facility, se
 }
 ```
 
-The validation script (`raw_zone_schema_validation.py`) loads these contracts and rejects or flags any payloads that don't conform. This keeps data quality high and makes debugging easy.
+Schemas/Contracts are available to be loaded by all pipeline scripts and queries within Databricks Workspace, allowing them to validate, rejects or flags any payloads that don't conform. This keeps data quality high and makes debugging easy.
 
 
 ## Extensibility
 ---------------------------------------------------------------------
 
-With bronze and silver layers delivering clean, trusted data, the platform opened new possibilities. Extensibility is about putting that data in the hands of different consumers—analysts, geoscientists, dashboards, ML pipelines—each with their own needs and tools.
+With bronze and silver layers delivering clean, trusted data, the platform opens new possibilities. Extensibility is about putting that data in the hands of different consumers—analysts, geoscientists, dashboards, ML pipelines—each with their own needs and tools.
 
 ### Visualization: Dashboards & Insights
 
@@ -260,7 +269,7 @@ The medallion architecture decouples producers from consumers, so adding a new d
 
 ### Scaling: From Pilot to Enterprise
 
-As data volumes grew, the team evolved the platform:
+As data volumes grows, the team evolves the platform:
 
 **Compute Scaling:**
 - Auto-scaling Databricks clusters: add workers as ingestion and transformation jobs demand compute.
@@ -274,7 +283,7 @@ As data volumes grew, the team evolved the platform:
 - Archive old bronze data to cheaper tiers (e.g., Azure Archive Storage) after a retention period.
 
 **Job Orchestration:**
-- Use Databricks Workflows (or Azure Data Factory, if preferred) to schedule and monitor pipelines.
+- Use Databricks Jobs (or Azure Data Factory, if preferred) to schedule and monitor pipelines.
 - Set up alerting for pipeline failures or data quality issues.
 
 **Terraform Modules for Scale:**
