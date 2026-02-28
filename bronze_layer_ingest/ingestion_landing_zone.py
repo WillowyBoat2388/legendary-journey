@@ -1,8 +1,59 @@
 from pyspark.sql.types import *
 from pyspark.sql.functions import *
+from pyspark.sql.streaming import StreamingQueryListener
+from pyspark.sql.streaming.listener import QueryStartedEvent, QueryProgressEvent, QueryTerminatedEvent
 import argparse
+import logging
+import json
 
 # src_list = ['production-daily-data', 'reservoir', 'equipment-events', 'wellbore', 'facility-telemetry', 'well-telemetry']
+# Set up structured JSON format for our application logs.
+
+class JSONFormatter(logging.Formatter):
+   """Structured JSON formatter for logging."""
+
+   def format(self, record: logging.LogRecord) -> str:
+       """Formats log records as JSON."""
+       log_record = {
+           'timestamp': self.formatTime(record, self.datefmt),
+           'level': record.levelname,
+           'message': record.getMessage(),
+           'logger': record.name,
+           'line': record.lineno,
+       }
+       return json.dumps(log_record)
+
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
+
+# Create a stream (console) handler
+# and set the formatter for the handler
+handler = logging.StreamHandler()
+formatter = JSONFormatter(datefmt='%Y-%m-%dT%H:%M:%S') # ISO-8601 format
+handler.setFormatter(formatter)
+logger.addHandler(handler)
+vrsn = 5
+# Use the logger object to log messages instead of print()
+x = f"ingestion_to_landing_zone_script-v{vrsn}"
+logger.debug("This is a debug message")
+logger.info(f"This is an info message. x = {x}")
+logger.warning("This is a warning message")
+
+class SparkStreamingLogger(StreamingQueryListener):
+   def onQueryStarted(self, event: QueryStartedEvent):
+       logger.info(f"Query started: {event.name} ({event.id})")
+
+   def onQueryProgress(self, event: QueryProgressEvent):
+       logger.info(f"Query progress: {event.progress.json}")
+
+   def onQueryTerminated(self, event: QueryTerminatedEvent):
+       if event.exception:
+           logger.error(f"Query terminated: {event.id} ({event.exception})")
+       else:
+           logger.info(f"Query terminated: {event.id}")
+
+# Register the logging listener
+spark.streams.addListener(SparkStreamingLogger())
 
 def requirements():
     # Retrieve workspace name from Databricks secret and format it for schema/volume usage
@@ -22,13 +73,13 @@ def requirements():
 
 def telemetry_dump(production_source, source, checkPoints, outlake):
     # Print which source is being processed
-    print(f"{source.upper()} LANDINGZONE SINK")
+    logger.info(f"{source.upper()} LANDINGZONE SINK")
     files_path = f'{production_source}/{source}'
     src_inferredSchema = f'{files_path}/_checkpoint'
     dest_checkpointpath = f'{checkPoints}/{source}'
     outputPath = f"{outlake}.`{source}`"
 
-    print("Streaming Begins")
+    logger.info("Streaming Begins")
 
     # Read streaming data from cloudFiles (parquet), infer schema, and write to Delta table with checkpointing
     spark.readStream.format("cloudFiles").option("cloudFiles.format", "parquet") \
@@ -38,7 +89,7 @@ def telemetry_dump(production_source, source, checkPoints, outlake):
         .option("checkpointLocation", dest_checkpointpath) \
         .trigger(availableNow=True) \
         .toTable(outputPath)
-    print("LANDING ZONE SINKING COMPLETED")
+    logger.info("LANDING ZONE SINKING COMPLETED")
 
     return outputPath
 

@@ -1,8 +1,60 @@
 from pyspark.sql.types import *
 from pyspark.sql.functions import *
-import json
+from pyspark.sql.streaming import StreamingQueryListener
+from pyspark.sql.streaming.listener import QueryStartedEvent, QueryProgressEvent, QueryTerminatedEvent
 import argparse
-# import os
+import logging
+import json
+
+# src_list = ['production-daily-data', 'reservoir', 'equipment-events', 'wellbore', 'facility-telemetry', 'well-telemetry']
+# Set up structured JSON format for our application logs.
+
+class JSONFormatter(logging.Formatter):
+   """Structured JSON formatter for logging."""
+
+   def format(self, record: logging.LogRecord) -> str:
+       """Formats log records as JSON."""
+       log_record = {
+           'timestamp': self.formatTime(record, self.datefmt),
+           'level': record.levelname,
+           'message': record.getMessage(),
+           'logger': record.name,
+           'line': record.lineno,
+       }
+       return json.dumps(log_record)
+
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
+
+# Create a stream (console) handler
+# and set the formatter for the handler
+handler = logging.StreamHandler()
+formatter = JSONFormatter(datefmt='%Y-%m-%dT%H:%M:%S') # ISO-8601 format
+handler.setFormatter(formatter)
+logger.addHandler(handler)
+vrsn = 5
+# Use the logger object to log messages instead of print()
+x = f"ingestion_to_raw_zone_script-v{vrsn}"
+logger.debug("This is a debug message")
+logger.info(f"This is an info message. x = {x}")
+logger.warning("This is a warning message")
+
+class SparkStreamingLogger(StreamingQueryListener):
+   def onQueryStarted(self, event: QueryStartedEvent):
+       logger.info(f"Query started: {event.name} ({event.id})")
+
+   def onQueryProgress(self, event: QueryProgressEvent):
+       logger.info(f"Query progress: {event.progress.json}")
+
+   def onQueryTerminated(self, event: QueryTerminatedEvent):
+       if event.exception:
+           logger.error(f"Query terminated: {event.id} ({event.exception})")
+       else:
+           logger.info(f"Query terminated: {event.id}")
+
+# Register the logging listener
+spark.streams.addListener(SparkStreamingLogger())
+
 
 def requirements(table):
     # Retrieve workspace name from Databricks secret and format it

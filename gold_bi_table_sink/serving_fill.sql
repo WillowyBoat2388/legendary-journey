@@ -45,8 +45,12 @@ CREATE OR REPLACE TEMPORARY VIEW mermaid AS (
             quality
         FROM cte1
         order by client_id, well_id, sensor_id, timestamp
+    ),
+    CTE3 AS (
+    SELECT DISTINCT * FROM cte2
     )
-    SELECT * FROM cte2
+
+    select * from CTE3
 );
 
 -- Create the well_monitoring table if it doesn't exist, using the mermaid view
@@ -55,11 +59,18 @@ SELECT * FROM MERMAID;
 
 -- Merge new data from mermaid into well_monitoring with schema evolution
 -- OPTIMIZATION: Only merges incremental data (filtered by timestamp)
-MERGE WITH SCHEMA EVOLUTION INTO serving.well_monitoring AS w
-USING (
-    SELECT *
+INSERT INTO serving.well_monitoring
+    SELECT * 
     FROM mermaid
-) AS c
-ON c.client_id=w.client_id AND c.well_id=w.well_id AND c.timestamp=w.timestamp AND c.sensor_id=w.sensor_id
-WHEN NOT MATCHED THEN
-    INSERT *;
+    ORDER BY `timestamp`, client_id, well_id, sensor_id
+;
+
+
+-- MERGE WITH SCHEMA EVOLUTION INTO serving.well_monitoring AS W
+-- USING (
+--     SELECT *, cast(`timestamp` as date(timestamp))
+--     FROM mermaid
+-- ) AS c
+-- ON c.client_id=w.client_id AND c.well_id=w.well_id AND c.timestamp=w.timestamp AND c.sensor_id=w.sensor_id
+-- WHEN NOT MATCHED THEN
+--     INSERT *;
